@@ -5,7 +5,9 @@ var path = require("path");
 var logger = require("morgan");
 const session = require("client-sessions");
 const DButils = require("./routes/utils/DButils");
-var cors = require('cors')
+const cors = require('cors')
+const APIdata = require("./routes/APIdata.js");
+
 
 var app = express();
 app.use(logger("dev")); //logger
@@ -13,48 +15,51 @@ app.use(express.json()); // parse application/json
 app.use(
   session({
     cookieName: "session", // the cookie key name
-    //secret: process.env.COOKIE_SECRET, // the encryption key
+    // secret: process.env.COOKIE_SECRET, // the encryption key
     secret: "template", // the encryption key
     duration: 24 * 60 * 60 * 1000, // expired after 20 sec
     activeDuration: 1000 * 60 * 5, // if expiresIn < activeDuration,
     cookie: {
       httpOnly: false,
+      secure: false, // Set to true if using HTTPS
+
     }
     //the session will be extended by activeDuration milliseconds
   })
 );
 app.use(express.urlencoded({ extended: false })); // parse application/x-www-form-urlencoded
 app.use(express.static(path.join(__dirname, "public"))); //To serve static files such as images, CSS files, and JavaScript files
-//local:
-app.use(express.static(path.join(__dirname, "dist")));
-//remote:
-// app.use(express.static(path.join(__dirname, '../assignment-3-3-basic/dist')));
-app.get("/",function(req,res)
-{ 
-  //remote: 
-  // res.sendFile(path.join(__dirname, '../assignment-3-3-basic/dist/index.html'));
-  //local:
-  res.sendFile(__dirname+"/index.html");
-
-});
-
-// app.use(cors());
-// app.options("*", cors());
 
 const corsConfig = {
-  origin: true,
+  origin: 'http://localhost:8080',  // Frontend URL
   credentials: true
 };
 
 app.use(cors(corsConfig));
 app.options("*", cors(corsConfig));
 
+//local:
+app.use(express.static(path.join(__dirname, "dist")));
+//remote:
+app.use(express.static(path.join(__dirname, '..\\front_Rayyan\\dist')));
+app.get("/",function(req,res)
+{ 
+  //remote: 
+  res.sendFile(path.join(__dirname, '..\\front_Rayyan\\dist\\index.html'));
+  //local:
+  res.sendFile(__dirname+"/index.html");
+
+});
+
+
+
+// var port = process.env.PORT || "3000"; //local=3000 remote=80
+
 var port = process.env.PORT || "80"; //local=3000 remote=80
 //#endregion
 const user = require("./routes/user");
 const recipes = require("./routes/recipes");
 const auth = require("./routes/auth");
-
 
 //#region cookie middleware
 app.use(function (req, res, next) {
@@ -80,6 +85,7 @@ app.get("/alive", (req, res) => res.send("I'm alive"));
 app.use("/users", user);
 app.use("/recipes", recipes);
 app.use(auth);
+app.use("/APIdata", APIdata);
 
 // Default router
 app.use(function (err, req, res, next) {

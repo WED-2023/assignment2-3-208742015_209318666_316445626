@@ -10,19 +10,21 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "axios": "^0.19.2",
-    "bcrypt": "^4.0.1",
+    "axios": "^1.7.7",
+    "bcrypt": "^5.1.1",
     "client-sessions": "^0.8.0",
     "cookie-parser": "^1.4.5",
     "cors": "^2.8.5",
     "crypto-js": "^4.0.0",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "express-session": "^1.18.0",
     "express-validator": "^6.4.1",
     "morgan": "^1.10.0",
     "mssql": "^6.2.0",
     "nodemon": "^2.0.4",
-    "pg": "^8.2.1"
+    "pg": "^8.2.1",
+    "sanitize-html": "^2.13.0"
   },
   "devDependencies": {
     "mysql": "^2.18.1"
